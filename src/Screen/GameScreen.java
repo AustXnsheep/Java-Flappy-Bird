@@ -5,23 +5,28 @@ import Objects.RectangleObj;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class GameScreen {
     private JFrame frame;
     private JPanel panel;
     private JScrollPane scrollPane;
-    private final ImageIcon flappy_bird = new ImageIcon("Assets/Flappy_Birdy.png");
-    private Image flappy_bird_image = flappy_bird.getImage();
-    private Image final_flappy_bird_image = flappy_bird_image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
     private int yPosition = 300;
     private final int xPosition = 75;
     private final int width = 100;
     private final int height = 100;
     private boolean isDead = false;
+    private int angleInDegrees = 0;
     private Color playerColor = Color.RED;
+
+    private final ImageIcon flappy_bird = new ImageIcon(Objects.requireNonNull(getClass().getResource("/bin/Assets/Flappy_Bird.png")));
+    private final Image final_flappy_bird_image = flappy_bird.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    private final ImageIcon bgIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/bin/Assets/BackGround.png")));
+    private final Image bgImage = bgIcon.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
 
     private final int speed = 10;
     private double velocity = 0;
@@ -39,7 +44,6 @@ public class GameScreen {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
                 for (int x = 0; x < getWidth(); x += 50) {
                     for (int y = 0; y < getHeight(); y += 50) {
                         if ((x / 50) % 2 == (y / 50) % 2) {
@@ -56,9 +60,19 @@ public class GameScreen {
                     g.fillRect(rect.x-10, rect.height+250, rect.width + 20, 20);
                     g.fillRect(rect.x, rect.y, rect.width, rect.height);
                 }
-
+                for (int x = 0; x < getWidth(); x += frame.getWidth()) {
+                    for (int y = 0; y < getHeight(); y += frame.getHeight()) {
+                        g.drawImage(bgImage, x, y, this);
+                    }
+                }
                 g.setColor(playerColor);
-                g.drawImage(final_flappy_bird_image, xPosition, yPosition, Color.white, panel);
+                Graphics2D g2d = (Graphics2D) g;
+                double rotationPointX = xPosition + final_flappy_bird_image.getWidth(this) / 2.0;
+                double rotationPointY = yPosition + final_flappy_bird_image.getHeight(this) / 2.0;
+                g2d.rotate(Math.toRadians(angleInDegrees), rotationPointX, rotationPointY);
+                g.setColor(playerColor);
+                g.drawImage(final_flappy_bird_image, xPosition, yPosition, playerColor, this);
+                g2d.setTransform(new AffineTransform());
             }
         };
         panel.setPreferredSize(new Dimension(800, 600));
@@ -86,6 +100,9 @@ public class GameScreen {
             }
             velocity += gravity;
             yPosition += velocity;
+            if (!isDead) {
+                angleInDegrees = (int) Math.max(-10, Math.min(10, velocity));
+            }
             if (yPosition > frame.getHeight() - 150) {
                 yPosition = frame.getHeight() - 150;
                 velocity = 0;
@@ -100,6 +117,7 @@ public class GameScreen {
                             yPosition < rectangles.y + rectangles.height &&
                             yPosition + height > rectangles.y) {
                         isDead = true;
+                        angleInDegrees = 90;
                         System.out.println("Hit detected!");
                     }
                 }
