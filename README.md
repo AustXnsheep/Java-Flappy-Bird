@@ -1,6 +1,6 @@
 # [Flappy Bird](https://www.google.com/search?q=Flappy%20Bird) Game
 
-![Flappy Bird Demo](flappy_bird_demo.gif](https://cdn.discordapp.com/attachments/1138022768097640542/1139613656208900206/flappy_bird.gif)
+![Flappy Bird Demo](flappy_bird_demo.gif)
 
 ## Description
 This is a fun and exciting [Flappy Bird](https://www.google.com/search?q=Flappy%20Bird) game implemented in [Java](https://www.google.com/search?q=Java). The game is based on the popular mobile game "Flappy Bird" where the player controls a bird and attempts to navigate it through a series of pipes without colliding with them.
