@@ -25,8 +25,7 @@ public class GameScreen {
 
     private final ImageIcon flappy_bird = new ImageIcon(Objects.requireNonNull(getClass().getResource("/bin/Assets/Flappy_Bird.png")));
     private final Image final_flappy_bird_image = flappy_bird.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-    private final ImageIcon bgIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/bin/Assets/BackGround.png")));
-    private final Image bgImage = bgIcon.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
+    private final ImageIcon bgIcon = new ImageIcon("/bin/Assets/BackGround.png");
 
     private final int speed = 10;
     private double velocity = 0;
@@ -54,16 +53,12 @@ public class GameScreen {
                         g.fillRect(x, y, 50, 50);
                     }
                 }
+                Image bgImage = bgIcon.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
                 for (RectangleObj rect : rectangleList) {
                     g.setColor(Color.GREEN);
                     g.fillRect(rect.x-10, rect.height-5, rect.width + 20, 20);
                     g.fillRect(rect.x-10, rect.height+250, rect.width + 20, 20);
                     g.fillRect(rect.x, rect.y, rect.width, rect.height);
-                }
-                for (int x = 0; x < getWidth(); x += frame.getWidth()) {
-                    for (int y = 0; y < getHeight(); y += frame.getHeight()) {
-                        g.drawImage(bgImage, x, y, this);
-                    }
                 }
                 g.setColor(playerColor);
                 Graphics2D g2d = (Graphics2D) g;
@@ -71,6 +66,7 @@ public class GameScreen {
                 double rotationPointY = yPosition + final_flappy_bird_image.getHeight(this) / 2.0;
                 g2d.rotate(Math.toRadians(angleInDegrees), rotationPointX, rotationPointY);
                 g.setColor(playerColor);
+                g.drawImage(bgImage, 75, 412, this);
                 g.drawImage(final_flappy_bird_image, xPosition, yPosition, playerColor, this);
                 g2d.setTransform(new AffineTransform());
             }
@@ -83,6 +79,8 @@ public class GameScreen {
             public void actionPerformed(ActionEvent e) {
                 if (!isDead) {
                     velocity = jumpStrength;
+                    System.out.println(xPosition);
+                    System.out.println(yPosition);
                 }
             }
         });
